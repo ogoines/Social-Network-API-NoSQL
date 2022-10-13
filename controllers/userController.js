@@ -48,7 +48,8 @@ module.exports = {
         res.status(400).json(err);
       });
   },
-  // create a new user
+  
+    // create a new user
   createUser(req, res) {
     User.create(req.body)
       .then((user) => res.json(user))
@@ -57,25 +58,16 @@ module.exports = {
   // Delete a user and remove their thought
   deleteUser(req, res) {
     User.findOneAndRemove({ _id: req.params.userId })
-      .then((user) =>
-        
-           res.status(404).json({ message: 'No such user exists' })
-        
-        
-      )
-    //  .then((thought) =>
-      //   !thought
-      //     ? res.status(404).json({
-      //       message: 'User deleted, but no thoughts found',
-      //     })
-      //     : res.json({ message: 'User successfully deleted' })
-      // )
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json(err);
-      });
+    .then((dbUserData) => {
+      if (!dbUserData) {
+        res.status(404).json({ message: 'No user found with this id!' });
+        return;
+      }
+      res.json(dbUserData);
+    })
+    .catch((err) => res.status(400).json(err));
   },
-
+    
   // Add an friend to a user
   addFriend(req, res) {
     console.log('You are adding an assignment');
