@@ -55,12 +55,30 @@ module.exports = {
       .then((user) => res.json(user))
       .catch((err) => res.status(500).json(err));
   },
+
+  //updates user by id
+ // Update a user
+ updateUser(req, res) {
+ User.findOneAndUpdate(
+    { _id: req.params.userId },
+    { $set: req.body },
+    { runValidators: true, new: true }
+  )
+    .then((user) =>
+      !user
+        ? res.status(404).json({ message: 'No course with this id!' })
+        : res.json(user)
+    )
+    .catch((err) => res.status(500).json(err));
+},
+
+
   // Delete a user and remove their thought
   deleteUser(req, res) {
     User.findOneAndRemove({ _id: req.params.userId })
     .then((dbUserData) => {
       if (!dbUserData) {
-        res.status(404).json({ message: 'No user found with this id!' });
+        res.status(404).json({ message: 'No user found  with this id!' });
         return;
       }
       res.json(dbUserData);
