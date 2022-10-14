@@ -3,13 +3,16 @@ const { Thought, User } = require('../models');
 module.exports = {
   // Get all thoughts
   getThoughts(req, res) {
-    Thought.find()
-      .then((thoughts) => res.json(thoughts))
-      .catch((err) => res.status(500).json(err));
-  },
+    Thought.find({})
+        .then(thoughtData => res.json(thoughtData))
+        .catch(err => {
+            console.log(err);
+            res.status(400).json(err);
+        });
+},
   
-  // Get a thoughts
-  getThoughtById(req, res) {
+   //Get a thought
+  getThoughtById(params, res) {
     Thought.findOne({ _id: req.params.thoughtId })
       .select('-__v')
       .then((thought) =>
@@ -20,15 +23,24 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
   
-  // Create a course
-  createThought(req, res) {
-    Thought.create(req.body)
-      .then((thought) => res.json(thought))
-      .catch((err) => {
-        console.log(err);
-        return res.status(500).json(err);
-      });
-  },
+  createThought({ params, body }, res) {
+    Thought.create(body)
+        .then(({ _id }) => {
+            return User.findOneAndUpdate(
+                { _id: params.userId },
+                { $push: { thoughts: _id } },
+                { new: true }
+            );
+        })
+        .then(thoughtData => {
+            if (!thoughtData) {
+                res.status(404).json({ message: 'Incorrect thought data!' });
+                return;
+            }
+            res.json(thoughtData);
+        })
+        .catch(err => res.json(err));
+},
   
   // Update a thought
   updateThought(req, res) {
