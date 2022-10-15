@@ -66,7 +66,7 @@ module.exports = {
   )
     .then((user) =>
       !user
-        ? res.status(404).json({ message: 'No course with this id!' })
+        ? res.status(404).json({ message: 'No user with this id!' })
         : res.json(user)
     )
     .catch((err) => res.status(500).json(err));
@@ -88,7 +88,7 @@ module.exports = {
     
   // Add an friend to a user
   addFriend(req, res) {
-    console.log('You are adding an assignment');
+    console.log('You are adding an friend');
     console.log(req.body);
     User.findOneAndUpdate(
       { _id: req.params.userId },
