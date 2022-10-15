@@ -6,14 +6,13 @@ module.exports = {
     Thought.find({})
         .then(thoughtData => res.json(thoughtData))
         .catch(err => {
-            console.log(err);
             res.status(400).json(err);
         });
-},
+  },
   
    //Get a thought
-  getThoughtById(params, res) {
-    Thought.findOne({ _id: req.params.thoughtId })
+  getThoughtById(req, res) {
+    Thought.findOne({ _id: req.params.userId })
       .select('-__v')
       .then((thought) =>
         !thought
@@ -23,24 +22,56 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
   
-  createThought({ params, body }, res) {
-    Thought.create(body)
-        .then(({ _id }) => {
-            return User.findOneAndUpdate(
-                { _id: params.userId },
-                { $push: { thoughts: _id } },
-                { new: true }
-            );
-        })
-        .then(thoughtData => {
-            if (!thoughtData) {
-                res.status(404).json({ message: 'Incorrect thought data!' });
-                return;
-            }
-            res.json(thoughtData);
-        })
-        .catch(err => res.json(err));
-},
+  createThought(req, res) {
+    Thought.create(req.body)
+      .then((thought) => {
+        return User.findOneAndUpdate(
+          { _id: req.body.userId },
+          { $addToSet: { thoughts: thought._id } },
+          { new: true }
+        );
+      })
+      .then((user) =>
+        !user
+          ? res.status(404).json({
+              message: 'Thought created, but found no user with that ID',
+            })
+          : res.json('Created the thought 🎉')
+      )
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
+
+
+
+
+
+
+
+
+
+
+
+  //   createThought( req,  res) {
+//     Thought.create(req.body)
+//         .then(({ _id }) => {
+//             return User.findOneAndUpdate(
+//                 { _id: req.params.userId },
+//                 { $push: { thoughts: _id } },
+//                 { new: true }
+//             );
+//         })
+//         .then(thoughtData => {
+//             if (!thoughtData) {
+//                 res.status(404).json({ message: 'Incorrect thought data!' });
+//                 return;
+//             }
+//             res.json(thoughtData);
+//         })
+//         .catch(err => res.json(err));
+// },
   
   // Update a thought
   updateThought(req, res) {
@@ -58,14 +89,14 @@ module.exports = {
   },
 
   // Delete a thought
-  deleteThought(req, res) {
+  removeThought(req, res) {
     Thought.findOneAndDelete({ _id: req.params.thoughtId })
       .then((thought) =>
         !thought
           ? res.status(404).json({ message: 'No thoughts with that ID' })
           : User.deleteMany({ _id: { $in: thought.users } })
       )
-      .then(() => res.json({ message: 'Thought and users deleted!' }))
+      .then(() => res.json({ message: 'Thought deleted!' }))
       .catch((err) => res.status(500).json(err));
   }, 
   removeReaction(req, res) {
