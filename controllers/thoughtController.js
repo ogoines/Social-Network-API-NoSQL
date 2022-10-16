@@ -83,21 +83,21 @@ module.exports = {
   //     .catch((err) => res.status(500).json(err));
   // },
   
-  // createReaction(req, res) {
-  //   Thought.findOneAndUpdate(
-  //     { _id: req.params.thoughtId },
-  //     { $push: { reactions: req.body } },
-  //     { runValidators: true, new: true }
-  //   )
-  //     .then((user) =>
-  //       !user
-  //         ? res
-  //           .status(404)
-  //           .json({ message: 'No user found with that ID :(' })
-  //         : res.json(user)
-  //     )
-  //     .catch((err) => res.status(500).json(err));
-  // },
+  createReaction({ params, body }, res) {
+    Thought.findOneAndUpdate(
+      { _id: params.thoughtId },
+      { $push: { reactions: body } },
+      { new: true, runValidators: true },
+    )
+      .then((dbThoughtData) => {
+        if (!dbThoughtData) {
+          res.status(404).json({ message: 'No reaction with this ID!' })
+          return
+        }
+        res.json(dbThoughtData)
+      })
+      .catch((err) => res.json(err))
+  },
 
 
 
