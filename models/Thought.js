@@ -1,8 +1,8 @@
 const { Schema, model, Types } = require('mongoose');
-require("moment")
+const moment = require("moment");
 
 const dateFormat = (createdAtVal) => {
-  moment().format("MMM Do YY"); 
+moment().format("MMM Do YY"); 
 }
 
  // reaction schema
