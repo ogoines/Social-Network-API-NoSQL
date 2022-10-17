@@ -2,7 +2,7 @@ const { Schema, model, Types } = require('mongoose');
 const moment = require("moment");
 
 const dateFormat = (createdAtVal) => {
-moment().format("MMM Do YY"); 
+return moment().format("MMM Do YY"); 
 }
 
  // reaction schema
@@ -47,21 +47,27 @@ const thoughtSchema = new Schema(
       minlength: 1,
       maxlength: 280
     },
-
+    username: {
+      type: String,
+      required: 'Username required',
+    },
     createdAt: {
       type: Date,
       default: Date.now,
       get: (createdAtVal) => dateFormat(createdAtVal),
     },
 
-    username: {
-      type: String,
-      required: 'Username required',
-    },
     // array of nested reactions
     // gets reactionSchema 
     reactions: [reactionSchema],
-  }
+ },
+ {
+  //getters
+  toJSON: {
+    getters: true,
+  }, 
+}
+
 ) 
 
 // Retrieves the length of thoughts reaction array
