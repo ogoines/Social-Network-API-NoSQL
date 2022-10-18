@@ -97,19 +97,23 @@ module.exports = {
   },
 
  removeReaction(req, res) {
+  console.log(req.params)
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
       { $pull: { reactions: { reactionId: req.params.reactionId } } },
       { runValidators: true, new: true }
     )
-      .then((thought) =>
+      .then((thought) =>{
+        console.log(thought)
         !thought
           ? res
             .status(404)
             .json({ message: 'No user thought with that ID :(' })
           : res.json(thought)
-      )
-      .catch((err) => res.status(500).json(err));
+ })
+      .catch((err) =>{
+        console.log(err)
+        res.status(500).json(err)});
   }, 
 
 
