@@ -210,9 +210,9 @@ This will not be a model, but rather will be used as the `reaction` field's subd
 **`/api/thoughts/:thoughtId/reactions`**
 
 - `POST` to create a reaction stored in a single thought's `reactions` array field
-11111111111111111111
+11111111111111111111WorkingGGGGGGGGGGGGGGGGGGGGGGGGGGG
 - `DELETE` to pull and remove a reaction by the reaction's `reactionId` value
-
+111111111111111111111111WorkingGGGGGGGGGGGGGGGGGGGGG
 ## Grading Requirements
 
 > **Note**: If a Challenge assignment submission is marked as “0”, it is considered incomplete and will not count towards your graduation requirements. Examples of incomplete submissions include the following:
